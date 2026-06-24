@@ -17,6 +17,10 @@ func NewServer() *Server {
 	return &Server{hub: NewHub()}
 }
 
+func (s *Server) Hub() *Hub {
+	return s.hub
+}
+
 func (s *Server) Routes() http.Handler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", s.handleIndex)
@@ -181,6 +185,7 @@ var indexTemplate = template.Must(template.New("index").Parse(`<!doctype html>
       <p>Local normalized event bridge for the hosted Wellfield app. Keep this service running on <code>127.0.0.1:8787</code>.</p>
       <div class="actions">
         <a class="app-link" href="https://quartermeat.github.io/tiktok-connector/" target="_blank" rel="noreferrer">Open hosted app</a>
+        <a href="https://quartermeat.github.io/tiktok-connector/remote/" target="_blank" rel="noreferrer">Open remote connector</a>
         <span>Test events post to <code>/api/events</code>.</span>
       </div>
     </header>

@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Remote Connector</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #07100d;
+      --panel: #101815;
+      --line: #35554b;
+      --text: #edf6f2;
+      --muted: #a7bbb4;
+      --accent: #74e0a3;
+      --platinum: #d8dddb;
+      --danger: #e98c8c;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #07100d;
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    main {
+      width: min(100vw, 760px);
+      margin: 0 auto;
+      padding: 18px;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0 16px;
+      border-bottom: 1px solid var(--line);
+    }
+    h1 {
+      margin: 0;
+      color: var(--platinum);
+      font-size: 20px;
+      letter-spacing: 0;
+    }
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 700;
+    }
+    a:hover { text-decoration: underline; }
+    form {
+      display: grid;
+      gap: 14px;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    label {
+      display: grid;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    input {
+      height: 40px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      color: var(--text);
+      padding: 0 12px;
+      font: inherit;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+    button {
+      min-height: 48px;
+      border: 1px solid var(--line);
+      background: #12211b;
+      color: var(--text);
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    button:hover { border-color: var(--accent); color: var(--accent); }
+    button.primary {
+      background: var(--accent);
+      color: #052018;
+      border-color: var(--accent);
+    }
+    button.danger {
+      border-color: #6a3b3b;
+      color: #ffd3d3;
+    }
+    footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    #status {
+      min-height: 22px;
+      color: var(--platinum);
+    }
+    code { color: var(--accent); }
+    @media (max-width: 620px) {
+      main { padding: 12px; }
+      header, footer { align-items: flex-start; flex-direction: column; }
+      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Remote Connector</h1>
+      <a href="https://quartermeat.github.io/tiktok-connector/">Open game</a>
+    </header>
+    <form id="remote-form">
+      <label>Name
+        <input id="user" name="user" autocomplete="nickname" maxlength="40" value="viewer">
+      </label>
+      <div class="grid">
+        <button class="primary" data-type="comment" data-text="!attract" type="button">Attract</button>
+        <button data-type="comment" data-text="!repel" type="button">Repel</button>
+        <button data-type="comment" data-text="!burst" type="button">Burst</button>
+        <button data-type="like" data-text="" type="button">Like</button>
+        <button data-type="follow" data-text="" type="button">Follow</button>
+        <button class="danger" data-type="gift" data-gift="Remote Gift" data-value="3" type="button">Gift</button>
+      </div>
+      <label>Custom command
+        <input id="custom" name="custom" maxlength="80" value="!burst">
+      </label>
+      <button id="send-custom" type="submit">Send custom</button>
+    </form>
+    <footer>
+      <span id="status">Ready.</span>
+      <span>Relay topic <code id="topic-label"></code></span>
+    </footer>
+  </main>
+  <script>
+    const DEFAULT_RELAY = "https://ntfy.sh";
+    const DEFAULT_TOPIC = "quartermeat-tiktok-connector";
+
+    const params = new URLSearchParams(location.search);
+    const relay = (params.get("relay") || localStorage.getItem("remoteRelay") || DEFAULT_RELAY).replace(/\/+$/, "");
+    const topic = (params.get("topic") || localStorage.getItem("remoteTopic") || DEFAULT_TOPIC).replace(/^\/+|\/+$/g, "");
+    localStorage.setItem("remoteRelay", relay);
+    localStorage.setItem("remoteTopic", topic);
+
+    const status = document.getElementById("status");
+    const topicLabel = document.getElementById("topic-label");
+    const userInput = document.getElementById("user");
+    const customInput = document.getElementById("custom");
+    topicLabel.textContent = topic;
+
+    function payloadFor(type, text, gift, value) {
+      const payload = {
+        source: "remote",
+        type,
+        user: userInput.value.trim() || "viewer",
+        value: Number(value || 1)
+      };
+      if (text) payload.text = text;
+      if (gift) payload.gift = gift;
+      return payload;
+    }
+
+    async function sendEvent(payload) {
+      status.textContent = "Sending...";
+      const res = await fetch(`${relay}/${encodeURIComponent(topic)}`, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain" },
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) {
+        throw new Error(`relay returned ${res.status}`);
+      }
+      status.textContent = `Sent ${payload.type}${payload.text ? ` ${payload.text}` : ""}.`;
+    }
+
+    document.querySelectorAll("button[data-type]").forEach((button) => {
+      button.addEventListener("click", async () => {
+        const payload = payloadFor(button.dataset.type, button.dataset.text, button.dataset.gift, button.dataset.value);
+        try {
+          await sendEvent(payload);
+        } catch (err) {
+          status.textContent = `Send failed: ${err.message}`;
+        }
+      });
+    });
+
+    document.getElementById("remote-form").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const payload = payloadFor("comment", customInput.value.trim() || "!burst", "", 1);
+      try {
+        await sendEvent(payload);
+      } catch (err) {
+        status.textContent = `Send failed: ${err.message}`;
+      }
+    });
+  </script>
+</body>
+</html>

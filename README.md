@@ -29,6 +29,24 @@ To open the hosted app from PowerShell:
 .\scripts\open-app.ps1
 ```
 
+## Remote Connector
+
+The public remote connector page is:
+
+<https://quartermeat.github.io/tiktok-connector/remote/>
+
+It publishes viewer commands into the shared relay topic `quartermeat-tiktok-connector`. The local connector subscribes to that topic by default and republishes incoming remote events to the game.
+
+Remote relay flags:
+
+```powershell
+.\scripts\run.ps1
+go run ./cmd/tiktok-connector -remote-topic quartermeat-tiktok-connector
+go run ./cmd/tiktok-connector -remote-topic ""
+```
+
+The empty topic disables remote relay ingestion.
+
 Refresh the hosted bundle from the local Wellfield build with:
 
 ```powershell
