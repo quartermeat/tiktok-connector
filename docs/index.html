@@ -54,6 +54,34 @@
       overflow: hidden;
       box-shadow: 0 22px 80px rgb(103 232 194 / 0.14), 0 0 0 1px rgb(226 108 170 / 0.12);
     }
+    .invite {
+      min-height: 118px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: center;
+      padding: 12px 0;
+      border-top: 1px solid rgb(79 119 111 / 0.55);
+      color: var(--muted);
+    }
+    .invite strong {
+      display: block;
+      color: var(--text);
+      font-size: 16px;
+      margin-bottom: 6px;
+    }
+    .invite code {
+      display: inline-block;
+      margin-top: 6px;
+      font-size: 14px;
+    }
+    .invite img {
+      width: 96px;
+      height: 96px;
+      background: #fff;
+      padding: 6px;
+      border: 1px solid var(--line);
+    }
     canvas {
       width: 100% !important;
       height: 100% !important;
@@ -87,6 +115,7 @@
     @media (max-width: 700px) {
       main { padding: 10px; }
       header, footer { align-items: flex-start; flex-direction: column; height: auto; padding: 8px 0; }
+      .invite { grid-template-columns: 1fr; }
       #stage { min-height: 220px; }
     }
   </style>
@@ -97,6 +126,16 @@
       <h1>Wellfield</h1>
       <span>Stream events and clicks bend the particle field.</span>
     </header>
+    <section class="invite" aria-label="Remote connector invite">
+      <div>
+        <strong>Join the connector</strong>
+        <span>Scan or open the remote controller for this game.</span><br>
+        <a href="https://quartermeat.github.io/tiktok-connector/remote/" target="_blank" rel="noreferrer"><code>quartermeat.github.io/tiktok-connector/remote</code></a>
+      </div>
+      <a href="https://quartermeat.github.io/tiktok-connector/remote/" target="_blank" rel="noreferrer" aria-label="Open remote connector">
+        <img alt="QR code for the remote connector" src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&amp;margin=1&amp;data=https%3A%2F%2Fquartermeat.github.io%2Ftiktok-connector%2Fremote%2F">
+      </a>
+    </section>
     <section id="stage" aria-label="Wellfield simulation canvas">
       <div id="loading">Loading WebAssembly...</div>
     </section>
