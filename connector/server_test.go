@@ -36,3 +36,18 @@ func TestDeleteAPIEventMissingIDReturnsNotFound(t *testing.T) {
 		t.Fatalf("status = %d, want %d", rec.Code, http.StatusNotFound)
 	}
 }
+
+func TestCORSAllowsPrivateNetworkRequests(t *testing.T) {
+	server := NewServer()
+
+	req := httptest.NewRequest(http.MethodOptions, "/api/events", nil)
+	rec := httptest.NewRecorder()
+	server.Routes().ServeHTTP(rec, req)
+
+	if rec.Code != http.StatusNoContent {
+		t.Fatalf("status = %d, want %d", rec.Code, http.StatusNoContent)
+	}
+	if got := rec.Header().Get("Access-Control-Allow-Private-Network"); got != "true" {
+		t.Fatalf("private network header = %q, want true", got)
+	}
+}
