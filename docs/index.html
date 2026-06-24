@@ -77,6 +77,12 @@
       color: var(--muted);
       font-size: 13px;
     }
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 700;
+    }
+    a:hover { text-decoration: underline; }
     code { color: var(--accent); }
     @media (max-width: 700px) {
       main { padding: 10px; }
@@ -96,7 +102,7 @@
     </section>
     <footer>
       <span><code>Click</code> well. <code>!attract</code> <code>!repel</code> <code>!burst</code> gifts likes follows.</span>
-      <span>Connector: <code>127.0.0.1:8787</code></span>
+      <span>Connector: <code>127.0.0.1:8787</code> · <a href="https://quartermeat.github.io/tiktok-connector/" target="_blank" rel="noreferrer">Open remote version</a></span>
     </footer>
   </main>
   <script src="wasm_exec.js"></script>
