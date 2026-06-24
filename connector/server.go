@@ -162,6 +162,9 @@ var indexTemplate = template.Must(template.New("index").Parse(`<!doctype html>
     header, form, section { border-bottom: 1px solid var(--line); padding: 14px 0; }
     h1 { margin: 0; font-size: 20px; }
     p { color: var(--muted); }
+    a { color: var(--accent); }
+    .actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    .app-link { display: inline-flex; align-items: center; height: 36px; padding: 0 12px; color: #052018; background: var(--accent); text-decoration: none; font-weight: 700; }
     form { display: grid; grid-template-columns: 140px 120px 1fr 90px auto; gap: 8px; align-items: end; }
     label { display: grid; gap: 5px; color: var(--muted); font-size: 12px; }
     input, select, button { height: 36px; border: 1px solid var(--line); background: var(--panel); color: var(--text); padding: 0 10px; }
@@ -174,7 +177,11 @@ var indexTemplate = template.Must(template.New("index").Parse(`<!doctype html>
   <main>
     <header>
       <h1>TikTok Connector</h1>
-      <p>Local normalized event bridge. Apps subscribe to <code>/events</code>; test events post to <code>/api/events</code>.</p>
+      <p>Local normalized event bridge for the hosted Wellfield app. Keep this service running on <code>127.0.0.1:8787</code>.</p>
+      <div class="actions">
+        <a class="app-link" href="https://quartermeat.github.io/tiktok-connector/" target="_blank" rel="noreferrer">Open hosted app</a>
+        <span>Test events post to <code>/api/events</code>.</span>
+      </div>
     </header>
     <form id="event-form">
       <label>Type

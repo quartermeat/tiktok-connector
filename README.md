@@ -6,22 +6,28 @@ The connector normalizes incoming stream activity into a simple event schema and
 
 The repo also hosts the Wellfield WASM app through GitHub Pages from `docs/`.
 
-## Run
+## Run the Local Connector
 
 ```powershell
 cd D:\Codex\Projects\work\tiktok-connector
 .\scripts\run.ps1
 ```
 
-Open <http://127.0.0.1:8787>.
+Open <http://127.0.0.1:8787> for the local test console.
 
 ## Hosted Page
 
-The GitHub Pages site serves the static Wellfield app:
+The GitHub Pages site is the default Wellfield app:
 
 <https://quartermeat.github.io/tiktok-connector/>
 
 The hosted page can still consume stream events from the local connector when this service is running on `127.0.0.1:8787`.
+
+To open the hosted app from PowerShell:
+
+```powershell
+.\scripts\open-app.ps1
+```
 
 Refresh the hosted bundle from the local Wellfield build with:
 
