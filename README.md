@@ -47,6 +47,21 @@ go run ./cmd/tiktok-connector -remote-topic ""
 
 The empty topic disables remote relay ingestion.
 
+## Real TikTok LIVE adapter
+
+The optional adapter in `adapters/tiktok_live_adapter.py` reads real comments, gifts, likes, and follows from an active LIVE room and posts normalized events to this connector. It uses the unofficial `TikTokLive` Webcast client and requires only the public creator username; never provide a TikTok password, cookie, session token, or stream key.
+
+Install and run it in a separate PowerShell window:
+
+```powershell
+cd D:\Codex\Projects\work\tiktok-connector
+python -m pip install -r .\adapters\requirements.txt
+$env:TIKTOK_USERNAME='your_public_handle'
+.\scripts\run-tiktok-adapter.ps1
+```
+
+Start the connector first, then start the adapter only after the creator is LIVE. The adapter is experimental and unofficial, so verify it with a short test LIVE before relying on it for a public broadcast.
+
 Refresh the hosted bundle from the local Wellfield build with:
 
 ```powershell
